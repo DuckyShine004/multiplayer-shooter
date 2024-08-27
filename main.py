@@ -4,6 +4,8 @@ from src.server.application.application import Application
 
 
 def main():
+    pygame.init()
+
     window = pygame.display.set_mode((500, 500))
     pygame.display.set_caption("Client")
 

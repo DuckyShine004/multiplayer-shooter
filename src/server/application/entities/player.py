@@ -6,15 +6,20 @@ from src.utility.math import Vector2
 class Player:
     def __init__(self, x, y, width, height, color):
         self.position = Vector2(x, y)
+        self.velocity = Vector2(0, 0)
         self.width = width
         self.height = height
         self.color = color
         self.rect = pygame.Rect(x, y, width, height)
-        self.velocity = 10
+        self.speed = 8
 
     def move(self, dx, dy):
-        self.position.x += self.velocity * dx
-        self.position.y += self.velocity * dy
+        self.velocity.x = dx
+        self.velocity.y = dy
+        self.velocity.normalise()
+        self.velocity *= self.speed
+        print(str(self.velocity), self.velocity)
+        self.position += self.velocity
         self.rect.x = self.position.x
         self.rect.y = self.position.y
 

@@ -10,24 +10,41 @@ from src.constants.network_constants import ADDRESS
 class Server:
     def __init__(self):
         self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        self.clients = {}
         self.resources = {}
-        self.resource_id = 0
+        self.client_id = 0
 
-    def add_resource(self):
+    def start_client_thread(self, connection):
+        client_id = self.add_client(connection)
+        target = self.handle_client
+        arguments = (connection, client_id)
+
+        thread = threading.Thread(target=target, args=arguments)
+        thread.start()
+
+    def add_client(self, connection):
         resource = Resource()
         resource.initialise()
 
-        self.resources[self.resource_id] = resource
-        resource_id = self.resource_id
-        self.resource_id += 1
+        client_id = self.client_id
+        self.clients[client_id] = connection
+        self.resources[client_id] = resource
+        self.client_id += 1
 
-        return resource_id
+        return client_id
 
-    def remove_resource(self, resource_id):
-        print(f"Client {resource_id} disconnected")
-        self.resources.pop(resource_id)
+    def send_resources(self):
+        resources = pickle.dumps(self.resources)
 
-    def handle_resource(self, connection, resource_id):
+        for connection in self.clients.values():
+            connection.send(resources)
+
+    def remove_client(self, client_id):
+        print(f"Client {client_id} disconnected")
+        self.clients.pop(client_id)
+        self.resources.pop(client_id)
+
+    def handle_client(self, connection, client_id):
         try:
             while True:
                 data = connection.recv(2048)
@@ -35,19 +52,20 @@ class Server:
                 if not data:
                     break
 
-                self.process_data(resource_id, data)
+                self.process_data(client_id, data)
         finally:
-            self.remove_resource(resource_id)
+            self.remove_client(client_id)
             connection.close()
 
-    def process_data(self, resource_id, data):
+    def process_data(self, client_id, data):
         data = pickle.loads(data)
-        print(data)
-        resource = self.resources[resource_id]
+        resource = self.resources[client_id]
 
         if data["type"] == "move":
             player = resource.get_entity("player")
             player.move(data["dx"], data["dy"])
+
+        self.send_resources()
 
     def run(self):
         self.socket.bind(ADDRESS)
@@ -59,10 +77,7 @@ class Server:
                 connection, address = self.socket.accept()
                 print(f"Connected by {address}")
 
-                resource_id = self.add_resource()
-
-                thread = threading.Thread(target=self.handle_resource, args=(connection, resource_id))
-                thread.start()
+                self.start_client_thread(connection)
         finally:
             self.socket.close()
 
