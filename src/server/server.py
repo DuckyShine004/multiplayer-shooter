@@ -2,9 +2,11 @@ import socket
 import pickle
 import threading
 
+from threading import Lock
+
 
 from src.server.network.resource import Resource
-from src.constants.network_constants import ADDRESS
+from src.common.constants.network_constants import ADDRESS
 
 
 class Server:
@@ -12,39 +14,60 @@ class Server:
         self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.clients = {}
         self.resources = {}
+        self.messages = []
         self.client_id = 0
+        self.lock = Lock()
 
     def start_client_thread(self, connection):
-        client_id = self.add_client(connection)
-        target = self.handle_client
-        arguments = (connection, client_id)
+        with self.lock:
+            client_id = self.client_id
+            self.client_id += 1
 
-        thread = threading.Thread(target=target, args=arguments)
+        thread = threading.Thread(target=self.handle_client, args=(client_id, connection))
         thread.start()
 
-    def add_client(self, connection):
-        resource = Resource()
-        resource.initialise()
+    def add_client(self, client_id, connection):
+        with self.lock:
+            self.clients[client_id] = connection
+            resource = Resource()
+            resource.initialise()
+            self.resources[client_id] = resource
 
-        client_id = self.client_id
-        self.clients[client_id] = connection
-        self.resources[client_id] = resource
-        self.client_id += 1
+        self.add_server_message(f"SERVER: {client_id} joined the server")
+        self.send_data_to_client(client_id, {"id": client_id})
 
-        return client_id
+    def add_server_message(self, message):
+        self.messages.append(message)
+        self.set_all_resources("messages", self.messages)
 
-    def send_resources(self):
-        resources = pickle.dumps(self.resources)
+    def send_data_to_client(self, client_id, data):
+        data = pickle.dumps(data)
 
-        for connection in self.clients.values():
-            connection.send(resources)
+        with self.lock:
+            self.clients[client_id].send(data)
+
+    def send_data_to_all_clients(self, data):
+        data = pickle.dumps(data)
+
+        with self.lock:
+            for connection in self.clients.values():
+                connection.send(data)
 
     def remove_client(self, client_id):
-        print(f"Client {client_id} disconnected")
-        self.clients.pop(client_id)
-        self.resources.pop(client_id)
+        with self.lock:
+            connection = self.clients.pop(client_id)
 
-    def handle_client(self, connection, client_id):
+            if connection:
+                connection.close()
+
+            self.resources.pop(client_id)
+
+        print(f"Client {client_id} disconnected")
+        self.add_server_message(f"SERVER: {client_id} disconnected")
+
+    def handle_client(self, client_id, connection):
+        self.add_client(client_id, connection)
+
         try:
             while True:
                 data = connection.recv(2048)
@@ -55,7 +78,6 @@ class Server:
                 self.process_data(client_id, data)
         finally:
             self.remove_client(client_id)
-            connection.close()
 
     def process_data(self, client_id, data):
         data = pickle.loads(data)
@@ -65,12 +87,19 @@ class Server:
             player = resource.get_entity("player")
             player.move(data["dx"], data["dy"])
 
-        self.send_resources()
+        if data["type"] == "message":
+            self.add_server_message(data["message"])
+
+        self.send_data_to_all_clients(self.resources)
+
+    def set_all_resources(self, entity_name, data):
+        for resource in self.resources.values():
+            resource.set_entity(entity_name, data)
 
     def run(self):
         self.socket.bind(ADDRESS)
         self.socket.listen()
-        print("Opening server connection")
+        print("Server started!")
 
         try:
             while True:
@@ -82,5 +111,6 @@ class Server:
             self.socket.close()
 
 
-server = Server()
-server.run()
+if __name__ == "__main__":
+    server = Server()
+    server.run()

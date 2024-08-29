@@ -18,14 +18,14 @@ class Vector2:
     def __truediv__(self, t):
         return Vector2(self.x / t, self.y / t)
 
+    def __str__(self):
+        return "[" + str(self.x) + "," + str(self.y) + "]"
+
     def dot(self, other):
         return self.x * other.x + self.y * other.y
 
     def magnitude(self):
         return math.sqrt(self.dot(self))
-
-    def __str__(self):
-        return "[" + str(self.x) + "," + str(self.y) + "]"
 
     def normalise(self):
         magnitude = self.magnitude()

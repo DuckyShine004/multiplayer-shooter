@@ -1,6 +1,6 @@
 import pygame
 
-from src.utility.math import Vector2
+from src.common.utilities.vector2 import Vector2
 
 
 class Player:
@@ -18,7 +18,6 @@ class Player:
         self.velocity.y = dy
         self.velocity.normalise()
         self.velocity *= self.speed
-        print(str(self.velocity), self.velocity)
         self.position += self.velocity
         self.rect.x = self.position.x
         self.rect.y = self.position.y

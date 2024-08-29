@@ -1,34 +1,44 @@
 import pygame
+
+from src.server.network.resource import Resource
+from src.common.managers.gui_manager import GUIManager
+from src.common.constants.application_constants import FPS, BACKGROUND_COLOR
 from src.client.client import Client
 
 
 class Application:
     def __init__(self):
         self.client = Client()
+        self.gui_manager = GUIManager()
         self.resources = {}
-        self.is_running = True
+
+    def initialise(self):
+        self.gui_manager.initialise()
 
     def run(self, window):
         clock = pygame.time.Clock()
+        is_running = True
         self.client.connect()
+        self.client.wait_for_id_from_server()
 
-        while self.is_running:
-            window.fill((255, 255, 255))
+        while is_running:
+            delta_time = clock.tick(FPS) / 1000.0
+            window.fill(BACKGROUND_COLOR)
 
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
-                    self.is_running = False
-                    pygame.quit()
+                    is_running = False
 
-            self.update()
+                self.gui_manager.process_events(self.client, event)
+
+            self.update(delta_time)
             self.render(window)
 
             pygame.display.update()
-            clock.tick(60)
 
         pygame.quit()
 
-    def move_players(self):
+    def move_player(self):
         keys = pygame.key.get_pressed()
         data = {"type": "move", "dx": 0, "dy": 0}
 
@@ -44,13 +54,21 @@ class Application:
         self.client.send(data)
         self.resources = self.client.get_resources()
 
-    def update(self):
-        self.move_players()
+    def update(self, delta_time):
+        self.move_player()
+        self.gui_manager.update(self.client, delta_time)
 
     def render(self, window):
         if not self.resources:
             return
 
+        resource = next(iter(self.resources.values()))
+
+        if not isinstance(resource, Resource):
+            return
+
         for resource in self.resources.values():
             player = resource.get_entity("player")
             player.render(window)
+
+        self.gui_manager.render(window)
