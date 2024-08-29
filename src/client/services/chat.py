@@ -14,6 +14,7 @@ class Chat:
         self.text_entry = None
         self.text_box = None
         self.message_count = 0
+        self.is_hidden = False
 
     def initialise(self):
         text_entry_rect = pygame.Rect(CHAT_INPUT_RECT)
@@ -34,12 +35,30 @@ class Chat:
         self.text_entry.set_text("")
         self.text_entry.focus()
 
+    def toggle_chat(self):
+        self.is_hidden ^= True
+
+        if self.is_hidden:
+            self.text_entry.hide()
+            self.text_box.hide()
+        else:
+            self.text_entry.show()
+            self.text_box.show()
+
     def process_events(self, client, event):
         self.text_entry_manager.process_events(event)
         self.text_box_manager.process_events(event)
 
         if event.type == pygame_gui.UI_TEXT_ENTRY_FINISHED:
             self.send_message(client)
+
+        if event.type == pygame_gui.UI_TEXT_ENTRY_CHANGED:
+            text = self.text_entry.get_text()
+            self.text_entry.set_text(text[:-1] if text and text[-1] == "\\" else text)
+            self.text_entry.focus()
+
+        if event.type == pygame.KEYDOWN and event.key == pygame.K_BACKSLASH:
+            self.toggle_chat()
 
     def update(self, client, delta_time):
         self.text_entry_manager.update(delta_time)

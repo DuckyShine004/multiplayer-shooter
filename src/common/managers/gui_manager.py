@@ -15,6 +15,9 @@ class GUIManager:
     def initialise(self):
         self.chat.initialise()
 
+    def is_chat_hidden(self):
+        return self.chat.is_hidden
+
     def process_events(self, client, event):
         self.manager.process_events(event)
         self.chat.process_events(client, event)

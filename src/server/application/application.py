@@ -42,14 +42,15 @@ class Application:
         keys = pygame.key.get_pressed()
         data = {"type": "move", "dx": 0, "dy": 0}
 
-        if keys[pygame.K_a]:
-            data["dx"] = -1
-        if keys[pygame.K_d]:
-            data["dx"] = 1
-        if keys[pygame.K_w]:
-            data["dy"] = -1
-        if keys[pygame.K_s]:
-            data["dy"] = 1
+        if self.gui_manager.is_chat_hidden():
+            if keys[pygame.K_a]:
+                data["dx"] = -1
+            if keys[pygame.K_d]:
+                data["dx"] = 1
+            if keys[pygame.K_w]:
+                data["dy"] = -1
+            if keys[pygame.K_s]:
+                data["dy"] = 1
 
         self.client.send(data)
         self.resources = self.client.get_resources()
