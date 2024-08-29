@@ -27,7 +27,7 @@ class Client:
     def receive(self):
         try:
             while self.is_running:
-                data = self.socket.recv(2048)
+                data = self.socket.recv(1 << 32)
 
                 if data:
                     self.resources = pickle.loads(data)

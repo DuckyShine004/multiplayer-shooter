@@ -1,0 +1,30 @@
+{
+  "text_box": {
+    "colours": {
+      "dark_bg": "rgba(45,45,45,204)"
+    },
+    "misc": {
+      "border_width": "1",
+      "padding": "10,10",
+      "line_spacing": "1.0"
+    }
+  },
+  "text_box.vertical_scroll_bar": {
+    "colours": {
+      "dark_bg": "#505068"
+    },
+    "misc": {
+      "border_width": "1"
+    }
+  },
+  "text_box.vertical_scroll_bar.#sliding_button": {
+    "colours": {
+      "normal_bg": "#202040",
+      "hovered_bg": "#404060",
+      "selected_bg": "#606080"
+    },
+    "misc": {
+      "border_width": "0"
+    }
+  }
+}

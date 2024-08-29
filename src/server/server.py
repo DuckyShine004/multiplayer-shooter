@@ -33,7 +33,7 @@ class Server:
             resource.initialise()
             self.resources[client_id] = resource
 
-        self.add_server_message(f"SERVER: {client_id} joined the server")
+        self.add_server_message(((-1, "SERVER: "), (-1, f"{client_id} joined the server")))
         self.send_data_to_client(client_id, {"id": client_id})
 
     def add_server_message(self, message):
@@ -63,14 +63,14 @@ class Server:
             self.resources.pop(client_id)
 
         print(f"Client {client_id} disconnected")
-        self.add_server_message(f"SERVER: {client_id} disconnected")
+        self.add_server_message(((-1, "SERVER: "), (-1, f"{client_id} disconnected")))
 
     def handle_client(self, client_id, connection):
         self.add_client(client_id, connection)
 
         try:
             while True:
-                data = connection.recv(2048)
+                data = connection.recv(1 << 32)
 
                 if not data:
                     break

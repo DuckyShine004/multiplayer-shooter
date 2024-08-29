@@ -1,7 +1,7 @@
 {
   "text_entry_line": {
     "colours": {
-      "dark_bg": "#25292e40",
+      "dark_bg": "rgba(15,15,15,204)",
       "selected_bg": "#55595e00",
       "normal_text": "#FF0000",
       "selected_text": "#FF0000",
