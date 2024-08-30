@@ -11,20 +11,20 @@
   },
   "text_box.vertical_scroll_bar": {
     "colours": {
-      "dark_bg": "#505068"
+      "dark_bg": "#505069"
     },
     "misc": {
-      "border_width": "1"
+      "border_width": "2"
     }
   },
   "text_box.vertical_scroll_bar.#sliding_button": {
     "colours": {
-      "normal_bg": "#202040",
-      "hovered_bg": "#404060",
-      "selected_bg": "#606080"
+      "normal_bg": "#202041",
+      "hovered_bg": "#404061",
+      "selected_bg": "#606081"
     },
     "misc": {
-      "border_width": "0"
+      "border_width": "1"
     }
   }
 }

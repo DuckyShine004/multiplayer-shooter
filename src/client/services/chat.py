@@ -85,20 +85,31 @@ class Chat:
             self.update_text_box(messages, message_count)
 
     def initialise_text_box(self, messages):
-        for (name_color, name), (text_color, text) in messages:
-            name_color = self.get_text_color(name_color)
-            text_color = self.get_text_color(text_color)
-            self.text_box.append_html_text(f"<font color='{name_color}'>{name}<font color='{text_color}'>{text}<br>")
+        for message in messages:
+            html_message = self.get_html_message(message)
+            self.text_box.append_html_text(html_message)
 
         self.message_count = len(messages)
 
     def update_text_box(self, messages, message_count):
-        (name_color, name), (text_color, text) = messages[message_count - 1]
-        name_color = self.get_text_color(name_color)
-        text_color = self.get_text_color(text_color)
-        self.text_box.append_html_text(f"<font color='{name_color}'>{name}<font color='{text_color}'>{text}<br>")
-
+        html_message = self.get_html_message(messages[message_count - 1])
+        self.text_box.append_html_text(html_message)
         self.message_count = message_count
+
+    def get_html(self, message):
+        color, text = self.get_text_color(message[0]), message[1]
+        font = "Determination Mono Web"
+        size = "4.5"
+
+        return f"<font face='{font}' color='{color}' size='{size}'>{text}</font>"
+
+    def get_html_message(self, message):
+        name, text = message
+
+        name_html = self.get_html(name)
+        text_html = self.get_html(text)
+
+        return f"{name_html}{text_html}<br>"
 
     def get_text_color(self, color):
         color = TEXT_COLORS[color % MAX_PLAYERS] if color >= 0 else TEXT_COLORS[color]
