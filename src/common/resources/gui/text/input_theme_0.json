@@ -1,11 +1,10 @@
 {
   "text_entry_line": {
     "colours": {
-      "dark_bg": "rgba(15,15,15,204)",
-      "selected_bg": "#55595e00",
-      "normal_text": "#FF0000",
-      "selected_text": "#FF0000",
-      "normal_border": "#FF0000"
+      "dark_bg": "rgba(15,15,15,230)",
+      "selected_bg": "rgba(53,132,228,230)",
+      "normal_text": "#FFFFFF",
+      "selected_text": "#FFFFFF"
     },
     "font": {
       "name": "Determination Mono Web",

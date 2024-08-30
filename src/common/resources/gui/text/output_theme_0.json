@@ -1,7 +1,8 @@
 {
   "text_box": {
     "colours": {
-      "dark_bg": "rgba(45,45,45,204)"
+      "dark_bg": "rgba(30,30,30,230)",
+      "selected_bg": "rgba(53,132,228,230)"
     },
     "misc": {
       "border_width": "1",
@@ -11,20 +12,12 @@
   },
   "text_box.vertical_scroll_bar": {
     "colours": {
-      "dark_bg": "#505069"
-    },
-    "misc": {
-      "border_width": "2"
+      "dark_bg": "rgb(45,45,45)"
     }
   },
   "text_box.vertical_scroll_bar.#sliding_button": {
-    "colours": {
-      "normal_bg": "#202041",
-      "hovered_bg": "#404061",
-      "selected_bg": "#606081"
-    },
     "misc": {
-      "border_width": "1"
+      "border_width": "0"
     }
   }
 }
