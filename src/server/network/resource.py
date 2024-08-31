@@ -5,6 +5,7 @@ class Resource:
     def __init__(self):
         self.data = {
             "player": None,
+            "pong": False,
             "messages": [],
         }
 

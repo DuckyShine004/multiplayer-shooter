@@ -15,6 +15,7 @@ class Application:
         self.can_shoot = True
         self.resources = {}
         self.players = {}
+        self.last_ping_time = 0
 
     def initialise(self):
         self.gui_manager.initialise()
@@ -133,7 +134,16 @@ class Application:
             player_sprite = self.players[resource_id]
             player_sprite.update(player)
 
+    def ping_server(self):
+        time = pygame.time.get_ticks()
+
+        if time - self.last_ping_time > 1000.0:
+            self.client.ping()
+            self.last_ping_time = time
+            print(self.client.latency)
+
     def update(self, delta_time):
+        self.ping_server()
         self.move()
         self.shoot()
         self.rotate()

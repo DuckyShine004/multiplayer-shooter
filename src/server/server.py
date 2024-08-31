@@ -103,11 +103,15 @@ class Server:
         if data["type"] == "message":
             self.add_server_message(data["message"])
 
+        if data["type"] == "ping":
+            resource.set_entity("pong", True)
+
         for resource in self.resources.values():
             player = resource.get_entity("player")
             player.update_bullets()
 
         self.send_data_to_all_clients(self.resources)
+        resource.set_entity("pong", False)
 
     def set_all_resources(self, entity_name, data):
         for resource in self.resources.values():
