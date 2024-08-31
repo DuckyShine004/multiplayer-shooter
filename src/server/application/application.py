@@ -98,6 +98,24 @@ class Application:
             if not self.can_shoot:
                 self.can_shoot = True
 
+    def rotate(self):
+        if not self.gui_manager.is_chat_hidden():
+            return
+
+        if not self.resources:
+            return
+
+        resource = next(iter(self.resources.values()))
+
+        if not isinstance(resource, Resource):
+            return
+
+        data = {"type": "rotate"}
+        data["mouse_position"] = pygame.mouse.get_pos()
+
+        self.client.send(data)
+        self.resources = self.client.get_resources()
+
     def update_sprites(self):
         if not self.resources:
             return
@@ -112,12 +130,13 @@ class Application:
 
             if resource_id not in self.players:
                 self.players[resource_id] = PlayerSprite(resource_id)
-
-            self.players[resource_id].update(player)
+            player_sprite = self.players[resource_id]
+            player_sprite.update(player)
 
     def update(self, delta_time):
         self.move()
         self.shoot()
+        self.rotate()
         self.update_sprites()
         self.gui_manager.update(self.client, delta_time)
 

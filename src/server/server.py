@@ -90,6 +90,10 @@ class Server:
             player = resource.get_entity("player")
             player.move(data["dx"], data["dy"])
 
+        if data["type"] == "rotate":
+            player = resource.get_entity("player")
+            player.update_gun(data["mouse_position"])
+
         if data["type"] == "shoot":
             player = resource.get_entity("player")
             source = Vector2(*data["source"])

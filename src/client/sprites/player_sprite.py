@@ -1,3 +1,4 @@
+from src.client.sprites.gun_sprite import GunSprite
 from src.common.utilities.utility import Utility
 
 
@@ -7,14 +8,13 @@ class PlayerSprite:
         self.sprites = Utility.get_player_sprites(player_id, (4, 4))
         self.sprite_index = 0
         self.sprite = self.sprites[0]
-        self.gun_sprite = Utility.get_gun_sprite((1, 1))
+        self.gun_sprite = GunSprite()
         self.is_flipped = False
         self.rect = self.sprite.get_rect()
-        self.gun_rect = self.gun_sprite.get_rect()
 
     def update(self, player):
-        self.rect.x = player.position.x
-        self.rect.y = player.position.y
+        self.rect.center = (player.position.x, player.position.y)
+        self.gun_sprite.update(player.gun)
 
         if player.velocity.x == player.velocity.y == 0.0:
             self.sprite_index = 0
@@ -33,11 +33,7 @@ class PlayerSprite:
         elif player.velocity.x < 0:
             self.is_flipped = True
 
-        self.update_gun()
-
-    def update_gun(self): ...
-
     def render(self, window):
-        sprite = Utility.get_flipped_sprite(self.sprite) if self.is_flipped else self.sprite
+        sprite = Utility.get_flipped_sprite(self.sprite, vertical=True) if self.is_flipped else self.sprite
         window.blit(sprite, self.rect)
-        window.blit(self.gun_sprite, self.gun_rect)
+        self.gun_sprite.render(window)

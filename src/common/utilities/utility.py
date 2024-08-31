@@ -42,5 +42,5 @@ class Utility:
         return sprites
 
     @staticmethod
-    def get_flipped_sprite(sprite):
-        return pygame.transform.flip(sprite, True, False)
+    def get_flipped_sprite(sprite, vertical=False, horizontal=False):
+        return pygame.transform.flip(sprite, vertical, horizontal)

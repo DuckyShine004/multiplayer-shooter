@@ -47,6 +47,19 @@ class Vector2:
 
         return Vector2(self.x / magnitude, self.y / magnitude)
 
+    def rotate_about_point(self, point, theta):
+        s = math.sin(theta)
+        c = math.cos(theta)
+
+        self.x -= point.x
+        self.y += point.y
+
+        dx = c * point.x - s * point.y
+        dy = s * point.x + c * point.y
+
+        self.x = point.x + dx
+        self.y = point.y + dy
+
     @staticmethod
     def get_direction(a, b):
         return (b - a).normalised()
@@ -54,3 +67,9 @@ class Vector2:
     @staticmethod
     def get_distance(a, b):
         return (b - a).magnitude()
+
+    @staticmethod
+    def get_theta(a, b):
+        direction = Vector2.get_direction(a, b)
+
+        return math.atan2(-direction.y, direction.x)
