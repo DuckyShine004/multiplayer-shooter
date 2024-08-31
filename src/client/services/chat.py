@@ -1,8 +1,8 @@
 import pygame
 import pygame_gui
 
+from src.common.utilities.utility import Utility
 from src.common.constants.gui_constants import CHAT_INPUT_RECT, CHAT_OUTPUT_RECT
-from src.common.utilities.string_utility import StringUtility
 from src.server.network.resource import Resource
 from src.common.constants.application_constants import MAX_PLAYERS, TEXT_COLORS, WINDOW_RESOLUTION
 
@@ -114,7 +114,7 @@ class Chat:
     def get_text_color(self, color):
         color = TEXT_COLORS[color % MAX_PLAYERS] if color >= 0 else TEXT_COLORS[color]
 
-        return StringUtility.rgb_to_hex(color)
+        return Utility.rgb_to_hex(color)
 
     def render(self, window):
         self.text_entry_manager.draw_ui(window)

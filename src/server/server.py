@@ -1,10 +1,13 @@
 import socket
 import pickle
+import pygame
 import threading
 
 from threading import Lock
 
 
+from src.server.application.entities.bullet import Bullet
+from src.common.utilities.vector2 import Vector2
 from src.server.network.resource import Resource
 from src.common.constants.network_constants import ADDRESS
 
@@ -87,8 +90,18 @@ class Server:
             player = resource.get_entity("player")
             player.move(data["dx"], data["dy"])
 
+        if data["type"] == "shoot":
+            player = resource.get_entity("player")
+            source = Vector2(*data["source"])
+            destination = Vector2(*data["destination"])
+            player.bullets.append(Bullet(source, destination))
+
         if data["type"] == "message":
             self.add_server_message(data["message"])
+
+        for resource in self.resources.values():
+            player = resource.get_entity("player")
+            player.update_bullets()
 
         self.send_data_to_all_clients(self.resources)
 
@@ -111,6 +124,10 @@ class Server:
             self.socket.close()
 
 
-if __name__ == "__main__":
+def main():
     server = Server()
     server.run()
+
+
+if __name__ == "__main__":
+    main()

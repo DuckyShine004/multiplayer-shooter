@@ -9,7 +9,7 @@ class Resource:
         }
 
     def initialise(self):
-        self.data["player"] = Player(100, 100, 100, 100, (255, 0, 0))
+        self.data["player"] = Player(100, 100)
 
     def get_entity(self, entity_name):
         return self.data[entity_name]

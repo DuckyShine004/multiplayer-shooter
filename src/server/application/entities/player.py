@@ -1,17 +1,24 @@
-import pygame
-
 from src.common.utilities.vector2 import Vector2
 
 
 class Player:
-    def __init__(self, x, y, width, height, color):
+    def __init__(self, x, y):
         self.position = Vector2(x, y)
-        self.velocity = Vector2(0, 0)
-        self.width = width
-        self.height = height
-        self.color = color
-        self.rect = pygame.Rect(x, y, width, height)
-        self.speed = 8
+        self.velocity = Vector2()
+        self.speed = 6
+        self.bullets = []
+
+    def update_bullets(self):
+        filtered_bullets = []
+
+        for bullet in self.bullets:
+            if bullet.get_distance() < bullet.max_distance:
+                filtered_bullets.append(bullet)
+
+        self.bullets = filtered_bullets
+
+        for bullet in self.bullets:
+            bullet.move()
 
     def move(self, dx, dy):
         self.velocity.x = dx
@@ -19,8 +26,7 @@ class Player:
         self.velocity.normalise()
         self.velocity *= self.speed
         self.position += self.velocity
-        self.rect.x = self.position.x
-        self.rect.y = self.position.y
 
     def render(self, window):
-        pygame.draw.rect(window, self.color, self.rect)
+        for bullet in self.bullets:
+            bullet.render(window)
