@@ -6,7 +6,7 @@ import threading
 from threading import Event
 
 from src.server.network.resource import Resource
-from src.common.constants.network_constants import ADDRESS
+from src.common.constants.network_constants import CLIENT_ADDRESS
 
 
 class Client:
@@ -19,7 +19,7 @@ class Client:
         self.id_event = Event()
 
     def connect(self):
-        self.socket.connect(ADDRESS)
+        self.socket.connect(CLIENT_ADDRESS)
 
         thread = threading.Thread(target=self.receive, daemon=True)
         thread.start()

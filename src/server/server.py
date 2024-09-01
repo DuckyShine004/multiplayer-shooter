@@ -9,7 +9,7 @@ from threading import Lock
 from src.server.application.entities.bullet import Bullet
 from src.common.utilities.vector2 import Vector2
 from src.server.network.resource import Resource
-from src.common.constants.network_constants import ADDRESS
+from src.common.constants.network_constants import SERVER_ADDRESS
 
 
 class Server:
@@ -118,9 +118,9 @@ class Server:
             resource.set_entity(entity_name, data)
 
     def run(self):
-        self.socket.bind(ADDRESS)
+        self.socket.bind(SERVER_ADDRESS)
         self.socket.listen()
-        print("Server started!")
+        print(f"Server started on {SERVER_ADDRESS}")
 
         try:
             while True:
