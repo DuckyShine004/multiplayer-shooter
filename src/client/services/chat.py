@@ -29,7 +29,7 @@ class Chat:
         if not text:
             return
 
-        message = ((client.id, str(client.id) + ": "), (-2, text))
+        message = ((client.id, f"Player {client.id}: "), (-2, text))
         data = {"type": "message", "message": message}
         client.send(data)
         self.text_entry.set_text("")
