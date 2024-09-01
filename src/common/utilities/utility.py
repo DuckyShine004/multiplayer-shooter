@@ -11,6 +11,12 @@ class Utility:
         return "#{:02x}{:02x}{:02x}".format(rgb[0], rgb[1], rgb[2])
 
     @staticmethod
+    def get_connection_sprites(scale=(1, 1)):
+        path = os.path.join(*SPRITE_PATHS["connection"])
+
+        return Utility.get_sprites(path, scale)
+
+    @staticmethod
     def get_gun_sprite(scale=(1, 1)):
         path = os.path.join(*SPRITE_PATHS["gun"])
 
@@ -44,3 +50,13 @@ class Utility:
     @staticmethod
     def get_flipped_sprite(sprite, vertical=False, horizontal=False):
         return pygame.transform.flip(sprite, vertical, horizontal)
+
+    @staticmethod
+    def clamp(value, lower, upper):
+        if value < lower:
+            return lower
+
+        if value > upper:
+            return upper
+
+        return value

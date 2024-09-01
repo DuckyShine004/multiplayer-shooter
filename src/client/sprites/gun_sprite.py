@@ -6,7 +6,7 @@ from src.common.utilities.utility import Utility
 
 class GunSprite:
     def __init__(self):
-        self.sprite = Utility.get_gun_sprite((1, 1))
+        self.sprite = Utility.get_gun_sprite()
         self.is_flipped = False
         self.rect = self.sprite.get_rect()
         self.theta = 0
