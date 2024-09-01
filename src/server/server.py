@@ -73,7 +73,7 @@ class Server:
 
         try:
             while True:
-                data = connection.recv(1 << 32)
+                data = connection.recv(1 << 16)
 
                 if not data:
                     break
